@@ -13,17 +13,35 @@
             justify-content: center;
             height: 100vh;
             margin: 0;
-            background-color: #f4f7f6;
             color: #333;
             text-align: center;
+            
+            /* --- Background Image Setup --- */
+            /* Ensure you have 'braaibg.jpg' in the same folder */
+            background-image: url('braaibg.jpg');
+            /* This ensures the image covers the whole page without stretching weirdly */
+            background-size: cover; 
+            /* Center the image */
+            background-position: center;
+            /* Prevent repeating */
+            background-repeat: no-repeat;
+            /* Optional: keeps background in place while scrolling */
+            background-attachment: fixed;
+            /* A fallback color in case the image doesn't load */
+            background-color: #333;
         }
 
         .container {
             max-width: 600px;
             padding: 2rem;
-            background: white;
+            /* Made the white background slightly transparent (0.9 opacity) 
+               so the braai background fits better */
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
+            /* Ensure container sits above background, though usually not strictly necessary */
+            position: relative; 
+            z-index: 1;
         }
 
         h1 {
@@ -33,19 +51,19 @@
 
         p {
             line-height: 1.6;
-            color: #666;
-            margin-bottom: 2rem;
+            color: #444;
+            margin-bottom: 0; /* Removed bottom margin as it's the last item */
         }
 
-        /* The widget typically floats or appears as a button, 
-           so we ensure the page layout doesn't interfere with it. */
+        /* The ElevenLabs widget automatically places itself on top (high z-index) 
+           in the bottom right corner. No extra CSS needed for that. */
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>AI Voice Assistant</h1>
-        <p>Welcome! Click the widget in the corner of your screen to start a conversation with our ElevenLabs powered agent.</p>
+        <p>Welcome! Click the widget in the corner to start the conversation.</p>
     </div>
 
     <elevenlabs-convai agent-id="agent_7301kh8t8kdjf6qbgxq6j16xqtgj"></elevenlabs-convai>
