@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ElevenLabs AI Agent</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f7f6;
+            color: #333;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 1rem;
+            color: #1a1a1a;
+        }
+
+        p {
+            line-height: 1.6;
+            color: #666;
+            margin-bottom: 2rem;
+        }
+
+        /* The widget typically floats or appears as a button, 
+           so we ensure the page layout doesn't interfere with it. */
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>AI Voice Assistant</h1>
+        <p>Welcome! Click the widget in the corner of your screen to start a conversation with our ElevenLabs powered agent.</p>
+    </div>
+
+    <elevenlabs-convai agent-id="agent_7301kh8t8kdjf6qbgxq6j16xqtgj"></elevenlabs-convai>
+    <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+</body>
+</html>
