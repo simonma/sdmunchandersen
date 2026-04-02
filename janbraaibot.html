@@ -1,71 +1,207 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ElevenLabs AI Agent</title>
-    <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            color: #333;
-            
-            /* --- Background Image Setup --- */
-            /* Ensure you have 'braaibg.jpg' in the same folder */
-            background-image: url('braaibg.jpg');
-            /* This ensures the image covers the whole page without stretching weirdly */
-            background-size: cover; 
-            /* Center the image */
-            background-position: center;
-            /* Prevent repeating */
-            background-repeat: no-repeat;
-            /* Optional: keeps background in place while scrolling */
-            background-attachment: fixed;
-            /* A fallback color in case the image doesn't load */
-            background-color: #333;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jan Braai — AI Braai Assistant</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-        .container {
-            max-width: 600px;
-            padding: 2rem;
-            /* Made the white background slightly transparent (0.9 opacity) 
-               so the braai background fits better */
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 12px;
-            box-shadow: 0 4px 25px rgba(0, 0, 0, 0.2);
-            /* Ensure container sits above background, though usually not strictly necessary */
-            position: relative; 
-            z-index: 1;
-        }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-image: url('braaibg.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      background-color: #1a0f08;
+    }
 
-        h1 {
-            margin-bottom: 1rem;
-            color: #1a1a1a;
-        }
+    /* Dark overlay for readability */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 8, 3, 0.45);
+      z-index: 0;
+    }
 
-        p {
-            line-height: 1.6;
-            color: #444;
-            margin-bottom: 0; /* Removed bottom margin as it's the last item */
-        }
+    .container {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      max-width: 480px;
+      padding: 2rem 1.5rem;
+    }
 
-        /* The ElevenLabs widget automatically places itself on top (high z-index) 
-           in the bottom right corner. No extra CSS needed for that. */
-    </style>
+    .logo-area {
+      margin-bottom: 1.5rem;
+    }
+
+    .logo-area img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      border: 2px solid rgba(255,200,100,0.4);
+      margin-bottom: 0.75rem;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      color: #fff;
+      letter-spacing: -0.01em;
+      margin-bottom: 0.4rem;
+    }
+
+    .tagline {
+      font-size: 14px;
+      color: rgba(255,255,255,0.6);
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+    }
+
+    /* Mode toggle */
+    .mode-toggle {
+      display: inline-flex;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 100px;
+      padding: 4px;
+      gap: 4px;
+      margin-bottom: 1.5rem;
+    }
+
+    .mode-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      border-radius: 100px;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      color: rgba(255,255,255,0.6);
+      background: transparent;
+    }
+
+    .mode-btn.active {
+      background: rgba(255,200,100,0.9);
+      color: #1a0f08;
+    }
+
+    .mode-btn svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+
+    .mode-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 1rem;
+      height: 16px;
+      transition: opacity 0.2s;
+    }
+
+    /* Widget wrapper — controls mic visibility */
+    .widget-wrapper {
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    /* Hide mic button in text-only mode */
+    body.text-mode .widget-wrapper elevenlabs-convai::part(mic-button),
+    body.text-mode elevenlabs-convai::part(mic-button) {
+      display: none !important;
+    }
+
+    /* Fallback: hide via attribute selector targeting shadow DOM override */
+    body.text-mode {
+      --el-mic-display: none;
+    }
+  </style>
 </head>
-<body>
+<body class="voice-mode">
 
-    <div class="container">
-        <h1>AI Voice Assistant</h1>
-        <p>Welcome! Click the widget in the corner to start the conversation.</p>
+  <div class="container">
+    <div class="logo-area">
+      <h1>Jan Braai</h1>
+    </div>
+    <p class="tagline">Your AI braai companion</p>
+
+    <div class="mode-toggle">
+      <button class="mode-btn active" id="btnVoice" onclick="setMode('voice')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+          <line x1="12" y1="19" x2="12" y2="23"/>
+          <line x1="8" y1="23" x2="16" y2="23"/>
+        </svg>
+        Voice + Text
+      </button>
+      <button class="mode-btn" id="btnText" onclick="setMode('text')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+        </svg>
+        Text only
+      </button>
     </div>
 
-<elevenlabs-convai agent-id="agent_7301kh8t8kdjf6qbgxq6j16xqtgj"></elevenlabs-convai><script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+    <p class="mode-label" id="modeLabel">Mic enabled — speak or type to Jan</p>
+
+    <p style="font-size: 13px; color: rgba(255,255,255,0.35); margin-top: 3rem;">
+      Click the widget in the corner to start
+    </p>
+  </div>
+
+  <div class="widget-wrapper">
+    <elevenlabs-convai
+      id="elWidget"
+      agent-id="agent_7301kh8t8kdjf6qbgxq6j16xqtgj">
+    </elevenlabs-convai>
+  </div>
+
+  <script src="https://unpkg.com/@elevenlabs/convai-widget-embed" async type="text/javascript"></script>
+
+  <script>
+    function setMode(mode) {
+      const body = document.body;
+      const btnVoice = document.getElementById('btnVoice');
+      const btnText = document.getElementById('btnText');
+      const label = document.getElementById('modeLabel');
+      const widget = document.getElementById('elWidget');
+
+      if (mode === 'voice') {
+        body.classList.remove('text-mode');
+        body.classList.add('voice-mode');
+        btnVoice.classList.add('active');
+        btnText.classList.remove('active');
+        label.textContent = 'Mic enabled — speak or type to Jan';
+        widget.removeAttribute('disable-microphone');
+      } else {
+        body.classList.remove('voice-mode');
+        body.classList.add('text-mode');
+        btnText.classList.add('active');
+        btnVoice.classList.remove('active');
+        label.textContent = 'Text only — Jan will respond in text';
+        widget.setAttribute('disable-microphone', 'true');
+      }
+    }
+  </script>
 
 </body>
 </html>
